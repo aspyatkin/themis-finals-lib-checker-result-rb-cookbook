@@ -1,6 +1,6 @@
 name 'themis-finals-lib-checker-result-rb'
 description 'Installs and configures checker-result-rb'
-version '1.0.2'
+version '1.0.3'
 
 recipe 'themis-finals-lib-checker-result-rb', 'Installs and configures checker-result-rb'
 depends 'latest-git', '~> 1.1.6'
