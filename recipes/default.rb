@@ -17,11 +17,17 @@ if node.chef_environment.start_with? 'development'
   begin
     ssh_data_bag_item = data_bag_item('ssh', node.chef_environment)
   rescue
+    ::Chef::Log.warn 'Check whether ssh data bag exists!'
   end
 
-  ssh_key_map = (ssh_data_bag_item.nil?) ? {} : ssh_data_bag_item.to_hash.fetch('keys', {})
+  ssh_key_map = \
+    if ssh_data_bag_item.nil?
+      {}
+    else
+      ssh_data_bag_item.to_hash.fetch 'keys', {}
+    end
 
-  if ssh_key_map.size > 0
+  unless ssh_key_map.empty?
     url_repository = "git@github.com:#{node[id]['github_repository']}.git"
     ssh_known_hosts_entry 'github.com'
   end
@@ -40,9 +46,15 @@ if node.chef_environment.start_with? 'development'
   begin
     git_data_bag_item = data_bag_item('git', node.chef_environment)
   rescue
+    ::Chef::Log.warn 'Check whether git data bag exists!'
   end
 
-  git_options = (git_data_bag_item.nil?) ? {} : git_data_bag_item.to_hash.fetch('config', {})
+  git_options = \
+    if git_data_bag_item.nil?
+      {}
+    else
+      git_data_bag_item.to_hash.fetch 'config', {}
+    end
 
   git_options.each do |key, value|
     git_config "git-config #{key} at #{node[id]['basedir']}" do
